@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import teste.tgid_bruno.domain.entities.Empresa;
 import teste.tgid_bruno.domain.repositories.EmpresaRepository;
 import teste.tgid_bruno.dtos.EmpresaRequestDto;
+import teste.tgid_bruno.exceptions.SaldoException;
 
 import java.util.Optional;
 
@@ -99,5 +100,27 @@ public class EmpresaService {
 
     public Optional<Empresa> findById(String id) {
         return empresaRepository.findById(id);
+    }
+
+    public Empresa credit(Empresa empresa, Double valor) {
+        // Aplica a taxa de administração, quando valor for adicionado
+        Double finalValue = empresa.getSaldo() + (valor - (valor * empresa.getTaxaServico()));
+
+        empresa.setSaldo(finalValue);
+
+        return empresaRepository.save(empresa);
+    }
+
+    public Empresa debit(Empresa empresa, Double valor) {
+
+        if (valor > empresa.getSaldo()) {
+            throw new SaldoException();
+        }
+
+        Double finalValue = empresa.getSaldo() - valor;
+
+        empresa.setSaldo(finalValue);
+
+        return empresaRepository.save(empresa);
     }
 }

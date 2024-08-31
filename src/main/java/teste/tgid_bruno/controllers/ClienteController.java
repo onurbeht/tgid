@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import teste.tgid_bruno.domain.entities.Cliente;
 import teste.tgid_bruno.dtos.ClienteRequestDto;
+import teste.tgid_bruno.dtos.CreditRequestDto;
 import teste.tgid_bruno.services.ClienteService;
 import teste.tgid_bruno.services.EmpresaService;
 
@@ -63,5 +64,27 @@ public class ClienteController {
 
         return ResponseEntity.created(new URI("/api/clientes/" + newCliente.getId())).body(newCliente);
 
+    }
+
+    @PostMapping("/deposito")
+    public ResponseEntity<?> credit(@RequestBody @Valid CreditRequestDto data) {
+        var possibleEmpresa = empresaService.findById(data.id_empresa());
+
+        if (possibleEmpresa.isEmpty()) {
+            return ResponseEntity.badRequest().body("Empresa não encontrada, verifique o ID e tente novamente!");
+        }
+
+        return ResponseEntity.ok(empresaService.credit(possibleEmpresa.get(), data.value()));
+    }
+
+    @PostMapping("/saque")
+    public ResponseEntity<?> debit(@RequestBody @Valid CreditRequestDto data) {
+        var possibleEmpresa = empresaService.findById(data.id_empresa());
+
+        if (possibleEmpresa.isEmpty()) {
+            return ResponseEntity.badRequest().body("Empresa não encontrada, verifique o ID e tente novamente!");
+        }
+
+        return ResponseEntity.ok(empresaService.debit(possibleEmpresa.get(), data.value()));
     }
 }
