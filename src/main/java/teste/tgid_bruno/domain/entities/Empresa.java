@@ -10,11 +10,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Table(name = "Empresas")
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Empresa {
 
     @Id
@@ -35,5 +39,10 @@ public class Empresa {
 
     @OneToMany(mappedBy = "empresa")
     private List<Cliente> clientes = new ArrayList<>();
+
+    public Empresa(String cnpj, String nome) {
+        this.cnpj = cnpj;
+        this.nome = nome;
+    }
 
 }
