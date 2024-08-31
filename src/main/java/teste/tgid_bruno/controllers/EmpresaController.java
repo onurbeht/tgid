@@ -25,7 +25,6 @@ public class EmpresaController {
 
         if (possibleEmpresa.isPresent()) {
             Empresa empresa = possibleEmpresa.get();
-            System.out.println(empresa);
             return ResponseEntity.ok(empresa);
         }
 
